@@ -1,41 +1,41 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
-</head>
-<body>
-    <h1>Register for the First Time</h1>
-    <form id = "register" action="/register" method="POST">
-        <label for="username">Username: </label><br>
-        <input type="text" id="username" name="username" placeholder="Enter Your Username Here"></label><br>
-        <label for="email">Email: </label><br>
-        <input type="text" id="email" name="email" placeholder="Enter Your Email Here"></label><br>
-        <label for="password">Password: </label><br>
-        <input type="password" id="password" name="password" placeholder="Enter Your Password Here"></label><br><br>
-        <input type="submit" value="Submit">
-        <br>
-        <br>
-    </form>
+{% extends 'base.html' %}
 
-    <h1>Login</h1>
-    <form id="login" action="/login" method="POST">
-        <label for="username">Username: </label><br>
-        <input type="text" id="username" name="username" placeholder="Enter Your Username Here"></label><br>
-        <label for="password">Password: </label><br>
-        <input type="password" id="password" name="password" placeholder="Enter Your Password Here"></label><br><br>
-        <input type="submit" value="Submit">
-    </form>
+{% block content %}
+<h2>Welcome</h2>
+<p>Please register or login to continue.</p>
 
-    <h3>Forget Password: </h3>
-    <form id="forget_password" action="/forget_password" method="POST">
-        <label for="email">Email: </label><br>
-        <input type="text" id="email" name="email" placeholder="Enter Your Email Here"></label><br><br>
-        <input type="submit" value="Submit">
+<div style="display:flex; gap:40px;">
+    <div>
+        <h3>Register</h3>
+        <form id = "register" action="/register" method="POST">
+            <label for="username">Username: </label><br>
+            <input type="text" id="username" name="username" placeholder="Enter Your Username Here"><br>
+            <label for="email">Email: </label><br>
+            <input type="text" id="email" name="email" placeholder="Enter Your Email Here"><br>
+            <label for="password">Password: </label><br>
+            <input type="password" id="password" name="password" placeholder="Enter Your Password Here"><br><br>
+            <input type="submit" value="Register">
+        </form>
+    </div>
 
-    </form>
+    <div>
+        <h3>Login</h3>
+        <form id="login" action="/login" method="POST">
+            <label for="username_login">Username: </label><br>
+            <input type="text" id="username_login" name="username" placeholder="Enter Your Username Here"><br>
+            <label for="password_login">Password: </label><br>
+            <input type="password" id="password_login" name="password" placeholder="Enter Your Password Here"><br><br>
+            <input type="submit" value="Login">
+        </form>
 
+        <h4>Forgot password</h4>
+        <form id="forget_password" action="/forget_password" method="POST">
+            <label for="email_fp">Email: </label><br>
+            <input type="text" id="email_fp" name="email" placeholder="Enter Your Email Here"><br><br>
+            <input type="submit" value="Send Reset Email">
+        </form>
+    </div>
+</div>
 
-</body>
+{% endblock %}
 </html>

@@ -1,0 +1,164 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<h2>Your Dashboard</h2>
+
+<section>
+    <h3>Your Groups</h3>
+    {% if groups and groups|length > 0 %}
+        {% for g in groups %}
+            <div class="card">
+                <strong>{{ g.name }}</strong> <span style="color:#666;">(tag: <span id="tag-{{ g.id }}">{{ g.tag }}</span>)</span>
+                <button onclick="copyTag('tag-{{ g.id }}')" style="margin-left:8px;">Copy Tag</button>
+                <form action="/leave_group" method="POST" style="display:inline; margin-left:12px;">
+                    <input type="hidden" name="group_id" value="{{ g.id }}">
+                    <button type="submit">Leave Group</button>
+                </form>
+                <p>Members:</p>
+                <ul>
+                    {% for m in g.members %}
+                        <li>{{ m.username }} ({{ m.email }})</li>
+                    {% endfor %}
+                </ul>
+            </div>
+        {% endfor %}
+    {% else %}
+        <p>You are not in any groups yet. Use the forms to create or join a group.</p>
+    {% endif %}
+</section>
+
+<section>
+    <h3>Settled Splits</h3>
+    <button id="toggle-settled">Show settled expenses</button>
+    <div id="settled-container" style="display:none; margin-top:12px;">
+        {% if settled_splits and settled_splits|length > 0 %}
+            {% for s in settled_splits %}
+                <div class="card">
+                    <p><strong>{{ s.expense_description }}</strong></p>
+                    <p>Amount: ${{ '%.2f'|format(s.amount) }}</p>
+                    <p>Paid by: {{ s.payer }}</p>
+                    <p>Date: {{ s.date.strftime('%Y-%m-%d') if s.date }}</p>
+                    {% if s.receipt_image %}
+                        <p>Receipt: <a href="{{ url_for('static', filename='uploads/' ~ s.receipt_image) }}" target="_blank">View</a></p>
+                    {% endif %}
+                </div>
+            {% endfor %}
+        {% else %}
+            <p>No settled splits.</p>
+        {% endif %}
+    </div>
+</section>
+
+<section>
+    <h3>Outstanding Splits</h3>
+    {% if splits and splits|length > 0 %}
+        {% for s in splits %}
+            <div class="card">
+                <p><strong>{{ s.expense_description }}</strong></p>
+                <p>Amount: ${{ '%.2f'|format(s.amount) }}</p>
+                <p>Paid by: {{ s.payer }}</p>
+                <form action="/settle_split" method="POST" enctype="multipart/form-data">
+                    <input type="hidden" name="split_id" value="{{ s.split_id }}">
+                    <label>Optional receipt: <input type="file" name="receipt" accept="image/*,application/pdf"></label><br>
+                    <button type="submit">Mark as settled</button>
+                </form>
+            </div>
+        {% endfor %}
+    {% else %}
+        <p>No outstanding splits. Nice!</p>
+    {% endif %}
+</section>
+
+<section>
+    <h3>Group Expenses</h3>
+    {% if expenses and expenses|length > 0 %}
+        {% for e in expenses %}
+            <div class="card">
+                <p><strong>{{ e.description }}</strong> — ${{ '%.2f'|format(e.amount) }} <small>on {{ e.date.strftime('%Y-%m-%d') if e.date }}</small></p>
+                {% if e.location %}<p>Location: {{ e.location }}</p>{% endif %}
+                <p>Group ID: {{ e.group_id }} | Paid by: {{ e.payer }}</p>
+
+                {% if e.can_edit %}
+                    <details>
+                        <summary>Edit/Delete</summary>
+                        <form action="/edit_expense" method="POST" enctype="multipart/form-data">
+                            <input type="hidden" name="expense_id" value="{{ e.id }}">
+                            <label>Description: <input name="description" value="{{ e.description }}"></label><br>
+                            <label>Amount: <input name="amount" value="{{ '%.2f'|format(e.amount) }}"></label><br>
+                            <label>Location: <input name="location" value="{{ e.location if e.location }}"></label><br>
+                            {% if e.location %}
+                                <p>Current location: {{ e.location }}</p>
+                            {% endif %}
+                            {% if e.receipt_image %}
+                                <p>Receipt: <a href="{{ url_for('static', filename='uploads/' ~ e.receipt_image) }}" target="_blank">View</a></p>
+                            {% endif %}
+                            <label>Replace/Add Receipt: <input type="file" name="receipt" accept="image/*,application/pdf"></label><br>
+                            <label>Date: <input type="date" name="date" value="{{ e.date.strftime('%Y-%m-%d') if e.date }}"></label><br>
+                            <button type="submit">Save changes</button>
+                        </form>
+
+                        <form action="/delete_expense" method="POST" onsubmit="return confirm('Delete this expense?');">
+                            <input type="hidden" name="expense_id" value="{{ e.id }}">
+                            <button type="submit">Delete expense</button>
+                        </form>
+                    </details>
+                {% endif %}
+            </div>
+        {% endfor %}
+    {% else %}
+        <p>No recorded expenses yet.</p>
+    {% endif %}
+</section>
+
+<section>
+    <h3>Quick Actions</h3>
+    <div style="display:flex; gap:20px;">
+        <div class="card">
+            <h4>Join Group by Tag</h4>
+            <form action="/join_group" method="POST">
+                <input name="group_tag" placeholder="e.g. friends-1234"><br>
+                <button type="submit">Join</button>
+            </form>
+        </div>
+
+        <div class="card">
+            <h4>Create Group</h4>
+            <form action="/create_group" method="POST">
+                <input name="group_name" placeholder="Group name"><br>
+                <input name="members" placeholder="comma separated emails"><br>
+                <button type="submit">Create</button>
+            </form>
+        </div>
+
+        <div class="card">
+            <h4>Add Expense</h4>
+            <form action="/add_expense" method="POST">
+                <input name="group_name_expense" placeholder="Group name"><br>
+                <input name="description" placeholder="Description"><br>
+                <input name="location" placeholder="Location (optional)"><br>
+                <input name="amount" type="number" step="0.01" placeholder="Amount"><br>
+                <input name="paid_by" placeholder="Payer email"><br>
+                <button type="submit">Add</button>
+            </form>
+        </div>
+    </div>
+</section>
+
+{% endblock %}
+
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    const btn = document.getElementById('toggle-settled');
+    const container = document.getElementById('settled-container');
+    if (!btn || !container) return;
+    btn.addEventListener('click', function () {
+        if (container.style.display === 'none') {
+            container.style.display = 'block';
+            btn.textContent = 'Hide settled expenses';
+        } else {
+            container.style.display = 'none';
+            btn.textContent = 'Show settled expenses';
+        }
+    });
+});
+</script>

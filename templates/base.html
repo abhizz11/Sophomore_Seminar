@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SharePay</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 24px; }
+        header { display:flex; justify-content:space-between; align-items:center; }
+        nav a { margin-left: 16px; }
+        .card { border:1px solid #ddd; padding:12px; border-radius:6px; margin-bottom:12px; }
+    </style>
+    </head>
+<body>
+    <header>
+        <h1><a href="/">SharePay</a></h1>
+        <nav>
+            {% if session.username %}
+                Hello, {{ session.username }} | <a href="/dashboard">Dashboard</a> | <a href="/logout">Logout</a>
+            {% else %}
+                <a href="/">Login / Register</a>
+            {% endif %}
+        </nav>
+    </header>
+    <main>
+        {% with messages = get_flashed_messages() %}
+          {% if messages %}
+            <ul>
+            {% for m in messages %}
+              <li>{{ m }}</li>
+            {% endfor %}
+            </ul>
+          {% endif %}
+        {% endwith %}
+
+        {% block content %}{% endblock %}
+    </main>
+</body>
+</html>
