@@ -1,0 +1,46 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div style="max-width: 600px; margin: 0 auto;">
+    <h2>Security Check</h2>
+    <p>To verify your identity, please answer the following questions about your account activity.</p>
+    
+    <div class="card">
+        <form action="/verify_reset" method="POST">
+            <input type="hidden" name="username" value="{{ username }}">
+            
+            <h3>1. Email Verification</h3>
+            <p>Please confirm the email address associated with this account:</p>
+            <input type="email" name="email" placeholder="Enter your email address" required style="width: 100%;">
+
+            <h3>2. Group Verification</h3>
+            <p>Enter the name of one group you are currently a member of:</p>
+            <input type="text" name="group_name" placeholder="e.g. Ski Trip 2023" required style="width: 100%;">
+            
+            <p style="margin-top:15px;">Enter the <strong>username</strong> of one friend (other member) in that same group:</p>
+            <input type="text" name="friend_name" placeholder="Friend's username" required style="width: 100%;">
+            
+            <h3>3. Transaction Verification</h3>
+            <p>Please enter the amounts of <strong>3 past transactions</strong> you were involved in (either paid by you or split with you).</p>
+            <p style="font-size:0.85em; color:#666;">(If you have fewer than 3 transactions, fill as many as you have and leave the rest blank)</p>
+            
+            <label>Amount 1 ($):</label>
+            <input type="number" step="0.01" name="amount_1" placeholder="0.00" style="width: 100%;">
+            
+            <label>Amount 2 ($):</label>
+            <input type="number" step="0.01" name="amount_2" placeholder="0.00" style="width: 100%;">
+            
+            <label>Amount 3 ($):</label>
+            <input type="number" step="0.01" name="amount_3" placeholder="0.00" style="width: 100%;">
+            
+            <hr style="margin: 20px 0; border:0; border-top:1px solid #eee;">
+            
+            <h3>4. New Password</h3>
+            <label>Enter your new password:</label>
+            <input type="password" name="password" placeholder="New Password" required style="width: 100%;">
+            
+            <button type="submit" class="btn btn-primary" style="width: 100%; margin-top: 20px;">Verify & Reset Password</button>
+        </form>
+    </div>
+</div>
+{% endblock %}
