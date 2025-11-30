@@ -1,0 +1,42 @@
+File Structure:
+sharepay_project/
+│
+├── app.py                 <-- The main Python code you uploaded
+├── requirements.txt       <-- Create this file (content below)
+├── venv/                  <-- This will be created when you make the virtual env
+│
+├── static/                <-- Folder for CSS, Images, Uploads
+│   ├── sharepay.jpg       <-- Place your logo image here
+│   └── uploads/           <-- (Empty folder) App will save receipts here
+│
+└── templates/             <-- Folder specifically for HTML files
+    ├── base.html
+    ├── dashboard.html
+    ├── expenses.html
+    ├── index.html
+    └── security_check.html
+
+---------------------------------------------------------------------------------------
+These are the external libraries that SharePay uses:
+Flask
+Flask-SQLAlchemy
+Flask-Mail
+Flask-Bcrypt
+matplotlib
+---------------------------------------------------------------------------------------
+
+Installation Commands:
+1. Create the virutal environment: python -m venv venv
+
+2. Activation
+For windows: venv\Scripts\activate
+For Mac: source venv/bin/activate
+
+3. Install all the external libraries
+pip install <libraries mentioned in this file>
+
+4. Run: python app.py
+
+You should see something like this: http://127.0.0.1:5000
+Open your webbrowser and go to http://127.0.0.1:5000
+
