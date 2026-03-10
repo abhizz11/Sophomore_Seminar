@@ -1,7 +1,7 @@
 File Structure:
 sharepay_project/
 │
-├── app.py                 <-- The main Python code you uploaded
+├── app.py                 <-- The main Python code
 ├── requirements.txt       <-- Create this file (content below)
 ├── venv/                  <-- This will be created when you make the virtual env
 │
